@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/problem_select"
+        android:title="@string/problem_select_text"
+        app:showAsAction="never" />
+    <!--    <item-->
+    <!--        android:id="@+id/action_anim_horizontal"-->
+    <!--        android:subject="@string/anim_h"-->
+    <!--        app:showAsAction="never"/>-->
+    <!--    <item-->
+    <!--        android:id="@+id/action_anim_none"-->
+    <!--        android:subject="@string/anim_none"-->
+    <!--        app:showAsAction="never"/>-->
+</menu>

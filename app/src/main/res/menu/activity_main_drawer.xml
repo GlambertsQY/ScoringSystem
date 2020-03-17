@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_scoring"
+            android:icon="@drawable/ic_home_white_24dp"
+            android:title="@string/scoring" />
+        <item
+            android:id="@+id/nav_search"
+            android:icon="@drawable/ic_search_white_24dp"
+            android:title="@string/search" />
+        <item
+            android:id="@+id/nav_questioninput"
+            android:icon="@drawable/ic_message_white_24dp"
+            android:title="@string/question_input" />
+    </group>
+
+    <item
+        android:id="@+id/account_menu_group"
+        android:title="@string/system">
+        <menu>
+            <item
+                android:id="@+id/nav_login"
+                android:icon="@drawable/ic_discover_white_24dp"
+                android:title="@string/login" />
+        </menu>
+    </item>
+
+    <item
+        android:id="@+id/account_info_group"
+        android:title="@string/personal"
+        android:visible="false">
+        <menu>
+            <item
+                android:id="@+id/nav_info_modify"
+                android:icon="@drawable/ic_touch_app_white_24dp"
+                android:title="@string/personalInfo" />
+        </menu>
+    </item>
+</menu>
