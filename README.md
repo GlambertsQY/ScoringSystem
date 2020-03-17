@@ -1,2 +1,2 @@
 # ScoringSystem
-毕业设计
+毕业设计Android App
