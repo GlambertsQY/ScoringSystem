@@ -172,55 +172,58 @@ public class ScoringFragment extends BaseMainFragment
                 new Thread() {
                     //在新线程中发送网络请求
                     public void run() {
-                        String appid = "149889";//要替换成自己的
-                        String secret = "0e24b6922d1b4ce18de73db48a611ed1";//要替换成自己的
-                        final String res = new ShowApiRequest("https://route.showapi.com/1750-10", appid, secret)
-                                .addTextPara("text_1", txt.getText().toString())
-                                .addTextPara("text_2", input.getText().toString())
-                                .addTextPara("model", "")
-                                .post();
-                        Log.d("MainActivity", res);
-
-                        String jsonData = res;
-                        Gson gson = new Gson();
-                        final Showapi showapiData = gson.fromJson(jsonData, Showapi.class);
-                        if (showapiData == null) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), "网络问题", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else if (!showapiData.getShowapi_res_code().equals("0")) {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    Toast.makeText(getActivity(), "调用失败，不可输入空文本", Toast.LENGTH_SHORT).show();
-                                }
-                            });
-                        } else {
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (showapiData.getShowapi_res_body().getData() == null) {
-                                        String str = txt.getText() + "\n" + showapiData.getShowapi_res_body().getRemark();
-                                        txt.setText(str);
-                                    } else {
-                                        String text1 = showapiData.getShowapi_res_body().getData().getTexts().getText_1();
-                                        String text2 = showapiData.getShowapi_res_body().getData().getTexts().getText_2();
-                                        String score = showapiData.getShowapi_res_body().getData().getScore();
-                                        String str =
-                                                txt.getText() +
+                        final String appid = "149889";//要替换成自己的
+                        final String secret = "0e24b6922d1b4ce18de73db48a611ed1";//要替换成自己的
+                        try {
+                            final String res = new ShowApiRequest("https://route.showapi.com/1750-10", appid, secret)
+                                    .addTextPara("text_1", txt.getText().toString())
+                                    .addTextPara("text_2", input.getText().toString())
+                                    .addTextPara("model", "")
+                                    .post();
+                            Log.d("MainActivity", res);
+                            String jsonData = res;
+                            Gson gson = new Gson();
+                            final Showapi showapiData = gson.fromJson(jsonData, Showapi.class);
+                            if (showapiData == null) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "网络问题", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else if (!showapiData.getShowapi_res_code().equals("0")) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Toast.makeText(getActivity(), "调用失败，不可输入空文本", Toast.LENGTH_SHORT).show();
+                                    }
+                                });
+                            } else {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (showapiData.getShowapi_res_body().getData() == null) {
+                                            String str = txt.getText() + "\n" + showapiData.getShowapi_res_body().getRemark();
+                                            txt.setText(str);
+                                        } else {
+                                            String text1 = showapiData.getShowapi_res_body().getData().getTexts().getText_1();
+                                            String text2 = showapiData.getShowapi_res_body().getData().getTexts().getText_2();
+                                            String score = showapiData.getShowapi_res_body().getData().getScore();
+                                            String str =
+                                                    txt.getText() +
 //                                            "\n输入1：" + text1 + '\n' +
 //                                            "输入2：" + text2 + '\n' +
-                                                        "\n相似度：" + score;
-                                        txt.setText(str);
+                                                            "\n相似度：" + score;
+                                            txt.setText(str);
+                                        }
                                     }
-                                }
-                            });
+                                });
+                            }
+                            System.out.println(res);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
                         }
-
-                        System.out.println(res);
                     }
                 }.start();
             }

@@ -153,6 +153,13 @@ public class SelectFragment extends BaseBackFragment {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Log.d(TAG, "onFailure: ");
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    });
                 }
 
                 @Override

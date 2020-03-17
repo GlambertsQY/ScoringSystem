@@ -145,6 +145,7 @@ public class SearchFragment extends BaseBackFragment {
                 @Override
                 public void onFailure(@NotNull Call call, @NotNull IOException e) {
                     Log.d(TAG, "onFailure: ");
+                    Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
