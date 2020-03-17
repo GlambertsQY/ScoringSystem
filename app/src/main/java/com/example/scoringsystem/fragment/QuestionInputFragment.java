@@ -106,12 +106,12 @@ public class QuestionInputFragment extends BaseBackFragment {
                     Toast.makeText(_mActivity, R.string.error_standardanswer, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                addUser(strSubject, strTitle, strStandardAnswer);
+                addQuestion(strSubject, strTitle, strStandardAnswer);
             }
         });
     }
 
-    private void addUser(final String subject, final String title, final String standardanswer) {
+    private void addQuestion(final String subject, final String title, final String standardanswer) {
         progressDialog.show();
         String url = "http://116.85.30.119/add_questionStandardAnswer?subject=" + subject + "&title=" + title
                 + "&standardanswer=" + standardanswer;
@@ -124,7 +124,13 @@ public class QuestionInputFragment extends BaseBackFragment {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
                 Log.d(TAG, "onFailure: ");
-                Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                _mActivity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    }
+                });
             }
 
             @Override
