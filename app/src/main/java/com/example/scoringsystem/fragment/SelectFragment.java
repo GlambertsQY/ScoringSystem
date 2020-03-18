@@ -58,7 +58,7 @@ public class SelectFragment extends BaseBackFragment {
     private SelectAdapter mAdapter;
     private List<Question> questionList = new ArrayList<>();
     private Button search_button;
-    private TextView keyword_text;
+    private TextView keyword_text, findNothing_text;
     private ProgressDialog progressDialog;
 
     private static SelectFragment fragment;
@@ -96,6 +96,7 @@ public class SelectFragment extends BaseBackFragment {
         progressDialog.setMessage("加载中");
         progressDialog.setCanceledOnTouchOutside(false);
         keyword_text = (TextView) view.findViewById(R.id.text_search);
+        findNothing_text = (TextView) view.findViewById(R.id.text_find_nothing_select);
         search_button = (Button) view.findViewById(R.id.button_search);
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mToolbar.setTitle(mTitle);
@@ -178,13 +179,25 @@ public class SelectFragment extends BaseBackFragment {
                             questionList.add(question);
                         }
                     }
-                    _mActivity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            mAdapter.notifyDataSetChanged();
-                            progressDialog.dismiss();
-                        }
-                    });
+                    if (questionList.size() == 0) {
+                        _mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                mAdapter.notifyDataSetChanged();
+                                progressDialog.dismiss();
+                                findNothing_text.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    } else {
+                        _mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                findNothing_text.setVisibility(View.GONE);
+                                mAdapter.notifyDataSetChanged();
+                                progressDialog.dismiss();
+                            }
+                        });
+                    }
                 }
             });
 //            _mActivity.runOnUiThread(new Runnable() {
