@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +55,7 @@ public class SearchFragment extends BaseBackFragment {
     private Button search_button;
     private TextView keyword_text, findNothing_text;
     private ProgressDialog progressDialog;
+    private Spinner spinner;
     private static SearchFragment fragment;
 
     public static SearchFragment newInstance(String title) {
@@ -92,6 +95,7 @@ public class SearchFragment extends BaseBackFragment {
         keyword_text = (TextView) view.findViewById(R.id.text_search_InSearch);
         findNothing_text = (TextView) view.findViewById(R.id.text_find_nothing_search);
         search_button = (Button) view.findViewById(R.id.button_search_InSearch);
+        spinner = (Spinner) view.findViewById(R.id.spinner_search);
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recy_search_InSearch);
 //        mAdapter = new SelectAdapter(_mActivity);
@@ -100,12 +104,26 @@ public class SearchFragment extends BaseBackFragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdapter);
 //        mAdapter.setDatas(questionList);
-        queryQuestion("");
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                mAdapter.setKeyword(keyword_text.getText().toString());
-                queryQuestion(keyword_text.getText().toString());
+                String keyword = keyword_text.getText().toString();
+                String subject = spinner.getSelectedItem().toString();
+                queryQuestion(keyword, subject);
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String keyword = keyword_text.getText().toString();
+                String subject = adapterView.getItemAtPosition(i).toString();
+                queryQuestion(keyword, subject);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
 
@@ -132,10 +150,10 @@ public class SearchFragment extends BaseBackFragment {
         }
     }
 
-    private void queryQuestion(final String queryStr) {
+    private void queryQuestion(final String keyword, final String subject) {
         progressDialog.show();
-        if (queryStr != null) {
-            String url = "http://116.85.30.119/questionstandardanswerlist?keyword=" + queryStr;
+        if (keyword != null) {
+            String url = "http://116.85.30.119/questionstandardanswerlist?keyword=" + keyword + "&subject=" + subject;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()

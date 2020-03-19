@@ -27,24 +27,78 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textView"
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/problem" />
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="科目：" />
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:id="@+id/text_scoring_subject"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="计算机综合" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="题目：" />
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:id="@+id/text_scoring_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="列举计算机的特点" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="标答：" />
+
+                <TextView
+                    style="@style/TextAppearance.AppCompat.Body1"
+                    android:id="@+id/text_scoring_standard_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dp"
+                    android:text="五大特点：运算速度快；计算精度高、可靠性强；存储功能强；具有逻辑判断能力；高度自动化。" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:id="@+id/answer"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="答案"
                 app:counterEnabled="true"
                 app:counterMaxLength="140"
+                app:endIconDrawable="@drawable/ic_add_a_photo_black_24dp"
+                app:endIconMode="custom"
                 app:helperText="@string/helperText_problem"
-                app:helperTextEnabled="true"
-                app:endIconMode="none"
-                app:endIconDrawable="@drawable/ic_add_a_photo_black_24dp">
+                app:helperTextEnabled="true">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/answer_text"
@@ -54,33 +108,34 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:layout_gravity="right">
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/score_button"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_margin="20px"
+                    android:layout_weight="1"
                     android:text="评分" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/scan_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="20px"
-                    android:text="拍照输入" />
+                <!--                <com.google.android.material.button.MaterialButton-->
+                <!--                    android:id="@+id/scan_button"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_margin="20px"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:text="拍照输入" />-->
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/album_button"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_margin="20px"
-                    android:text="相册输入" />
+                <!--                <com.google.android.material.button.MaterialButton-->
+                <!--                    android:id="@+id/album_button"-->
+                <!--                    android:layout_width="0dp"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_margin="20px"-->
+                <!--                    android:layout_weight="1"-->
+                <!--                    android:text="相册输入" />-->
             </LinearLayout>
 
             <ImageView

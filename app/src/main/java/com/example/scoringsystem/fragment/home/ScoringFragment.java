@@ -1,6 +1,7 @@
 package com.example.scoringsystem.fragment.home;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -38,16 +40,25 @@ import com.example.scoringsystem.bean.OCRBean.Block;
 import com.example.scoringsystem.bean.OCRBean.Line;
 import com.example.scoringsystem.bean.OCRBean.OcrResult;
 import com.example.scoringsystem.bean.OCRBean.Word;
+import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
+import com.example.scoringsystem.bean.SimilarityBean.Most_similarity;
+import com.example.scoringsystem.bean.SimilarityBean.SentSimilarityBean;
 import com.example.scoringsystem.bean.SimilarityBean.Showapi;
+import com.example.scoringsystem.entity.Question;
 import com.example.scoringsystem.fragment.SearchFragment;
 import com.example.scoringsystem.fragment.SelectFragment;
 import com.example.scoringsystem.utils.HttpUtil;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.show.api.ShowApiRequest;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -57,9 +68,17 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 
 public class ScoringFragment extends BaseMainFragment
@@ -73,11 +92,12 @@ public class ScoringFragment extends BaseMainFragment
     private static final int TAKE_PHOTO = 1;
     private static final int CHOOSE_PHOTO = 2;
     private Uri imageUri;
-    private TextView txt;
-    private TextView input;
+    private TextView text_subject, text_title, text_standard_answer, text_input;
     private Button button_scoring;
-    private Button take_photo;
-    private Button take_album;
+    //    private Button take_photo;
+//    private Button take_album;
+    private ProgressDialog progressDialog;
+    private SentSimilarityBean sentSimilarityBean;
 
     // 手写文字识别webapi接口地址
     private static final String WEBOCR_URL = "http://webapi.xfyun.cn/v1/service/v1/ocr/handwriting";
@@ -94,6 +114,8 @@ public class ScoringFragment extends BaseMainFragment
     public static ScoringFragment newInstance() {
         return new ScoringFragment();
     }
+
+    private TextInputLayout inputLayout;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -128,6 +150,10 @@ public class ScoringFragment extends BaseMainFragment
     }
 
     private void initView(View view) {
+        progressDialog = new ProgressDialog(_mActivity);
+        progressDialog.setMessage("评分中");
+        progressDialog.setCanceledOnTouchOutside(false);
+
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
 //        mRecy = (RecyclerView) view.findViewById(R.id.recy);
 
@@ -160,78 +186,14 @@ public class ScoringFragment extends BaseMainFragment
 //        }
 //        mAdapter.setDatas(articleList);
 
-        txt = view.findViewById(R.id.textView);
-        input = view.findViewById(R.id.answer_text);
-        button_scoring = view.findViewById(R.id.score_button);
-        take_photo = view.findViewById(R.id.scan_button);
-        take_album = view.findViewById(R.id.album_button);
-
-        button_scoring.setOnClickListener(new View.OnClickListener() {
+        text_subject = (TextView) view.findViewById(R.id.text_scoring_subject);
+        text_title = (TextView) view.findViewById(R.id.text_scoring_title);
+        text_standard_answer = (TextView) view.findViewById(R.id.text_scoring_standard_answer);
+        text_input = (TextView) view.findViewById(R.id.answer_text);
+        inputLayout = (TextInputLayout) view.findViewById(R.id.answer);
+        inputLayout.setEndIconOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                new Thread() {
-                    //在新线程中发送网络请求
-                    public void run() {
-                        final String appid = "149889";//要替换成自己的
-                        final String secret = "0e24b6922d1b4ce18de73db48a611ed1";//要替换成自己的
-                        try {
-                            final String res = new ShowApiRequest("https://route.showapi.com/1750-10", appid, secret)
-                                    .addTextPara("text_1", txt.getText().toString())
-                                    .addTextPara("text_2", input.getText().toString())
-                                    .addTextPara("model", "")
-                                    .post();
-                            Log.d("MainActivity", res);
-                            String jsonData = res;
-                            Gson gson = new Gson();
-                            final Showapi showapiData = gson.fromJson(jsonData, Showapi.class);
-                            if (showapiData == null) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity(), "网络问题", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            } else if (!showapiData.getShowapi_res_code().equals("0")) {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Toast.makeText(getActivity(), "调用失败，不可输入空文本", Toast.LENGTH_SHORT).show();
-                                    }
-                                });
-                            } else {
-                                getActivity().runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        if (showapiData.getShowapi_res_body().getData() == null) {
-                                            String str = txt.getText() + "\n" + showapiData.getShowapi_res_body().getRemark();
-                                            txt.setText(str);
-                                        } else {
-                                            String text1 = showapiData.getShowapi_res_body().getData().getTexts().getText_1();
-                                            String text2 = showapiData.getShowapi_res_body().getData().getTexts().getText_2();
-                                            String score = showapiData.getShowapi_res_body().getData().getScore();
-                                            String str =
-                                                    txt.getText() +
-//                                            "\n输入1：" + text1 + '\n' +
-//                                            "输入2：" + text2 + '\n' +
-                                                            "\n相似度：" + score;
-                                            txt.setText(str);
-                                        }
-                                    }
-                                });
-                            }
-                            System.out.println(res);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }.start();
-            }
-        });
-
-        take_photo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 File outputImage = new File(getActivity().getExternalCacheDir(),
                         "output_image.jpg");
                 try {
@@ -254,20 +216,119 @@ public class ScoringFragment extends BaseMainFragment
             }
         });
 
-        take_album.setOnClickListener(new View.OnClickListener() {
+        button_scoring = view.findViewById(R.id.score_button);
+//        take_photo = view.findViewById(R.id.scan_button);
+//        take_album = view.findViewById(R.id.album_button);
+
+        button_scoring.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ContextCompat.checkSelfPermission(getActivity(),
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager
-                        .PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(),
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            1);
+                String sa = text_standard_answer.getText().toString();
+                String a = text_input.getText().toString();
+                if (!sa.equals("") && !a.equals("")) {
+                    scoring(sa, a);
                 } else {
-                    openAlbum();
+                    Toast.makeText(_mActivity, "答案不能为空", Toast.LENGTH_SHORT).show();
                 }
+//                new Thread() {
+//                    //在新线程中发送网络请求
+//                    public void run() {
+//                        final String appid = "149889";//要替换成自己的
+//                        final String secret = "0e24b6922d1b4ce18de73db48a611ed1";//要替换成自己的
+//                        try {
+//                            final String res = new ShowApiRequest("https://route.showapi.com/1750-10", appid, secret)
+//                                    .addTextPara("text_1", txt.getText().toString())
+//                                    .addTextPara("text_2", input.getText().toString())
+//                                    .addTextPara("model", "")
+//                                    .post();
+//                            Log.d("MainActivity", res);
+//                            String jsonData = res;
+//                            Gson gson = new Gson();
+//                            final Showapi showapiData = gson.fromJson(jsonData, Showapi.class);
+//                            if (showapiData == null) {
+//                                getActivity().runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        Toast.makeText(getActivity(), "网络问题", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                });
+//                            } else if (!showapiData.getShowapi_res_code().equals("0")) {
+//                                getActivity().runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        Toast.makeText(getActivity(), "调用失败，不可输入空文本", Toast.LENGTH_SHORT).show();
+//                                    }
+//                                });
+//                            } else {
+//                                getActivity().runOnUiThread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//                                        if (showapiData.getShowapi_res_body().getData() == null) {
+//                                            String str = txt.getText() + "\n" + showapiData.getShowapi_res_body().getRemark();
+//                                            txt.setText(str);
+//                                        } else {
+//                                            String text1 = showapiData.getShowapi_res_body().getData().getTexts().getText_1();
+//                                            String text2 = showapiData.getShowapi_res_body().getData().getTexts().getText_2();
+//                                            String score = showapiData.getShowapi_res_body().getData().getScore();
+//                                            String str =
+//                                                    txt.getText() +
+////                                            "\n输入1：" + text1 + '\n' +
+////                                            "输入2：" + text2 + '\n' +
+//                                                            "\n相似度：" + score;
+//                                            txt.setText(str);
+//                                        }
+//                                    }
+//                                });
+//                            }
+//                            System.out.println(res);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                            Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+//                        }
+//                    }
+//                }.start();
             }
         });
+
+//        take_photo.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                File outputImage = new File(getActivity().getExternalCacheDir(),
+//                        "output_image.jpg");
+//                try {
+//                    if (outputImage.exists()) {
+//                        outputImage.delete();
+//                    }
+//                    outputImage.createNewFile();
+//                } catch (IOException ex) {
+//                    ex.printStackTrace();
+//                }
+//                if (Build.VERSION.SDK_INT >= 24) {
+//                    imageUri = FileProvider.getUriForFile(getActivity(),
+//                            "com.example.scoringsystem.fileprovider", outputImage);
+//                } else {
+//                    imageUri = Uri.fromFile(outputImage);
+//                }
+//                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
+//                startActivityForResult(intent, TAKE_PHOTO);
+//            }
+//        });
+//
+//        take_album.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (ContextCompat.checkSelfPermission(getActivity(),
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager
+//                        .PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(getActivity(),
+//                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+//                            1);
+//                } else {
+//                    openAlbum();
+//                }
+//            }
+//        });
     }
 
     /**
@@ -283,10 +344,9 @@ public class ScoringFragment extends BaseMainFragment
     public void onFragmentResult(int requestCode, int resultCode, Bundle data) {
         super.onFragmentResult(requestCode, resultCode, data);
         if (requestCode == REQ_MODIFY_FRAGMENT && resultCode == RESULT_OK && data != null) {
-            String str = "课程：" + data.getString("subject") + "\n" +
-                    "题目：" + data.getString("title") + "\n" +
-                    "标答：" + data.getString("answer");
-            txt.setText(str);
+            text_subject.setText(data.getString("subject"));
+            text_title.setText(data.getString("title"));
+            text_standard_answer.setText(data.getString("answer"));
         }
     }
 
@@ -300,7 +360,7 @@ public class ScoringFragment extends BaseMainFragment
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            input.setText("联网转换为序列化文本中。。。");
+                            text_input.setText("联网转换为序列化文本中。。。");
                         }
                     });
 //                        Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
@@ -330,9 +390,9 @@ public class ScoringFragment extends BaseMainFragment
                                     @Override
                                     public void run() {
                                         if (ocrResult == null) {
-                                            input.setText("建议重试");
+                                            text_input.setText("建议重试");
                                         } else if (!ocrResult.getCode().equals("0")) {
-                                            input.setText("API错误");
+                                            text_input.setText("API错误");
                                         } else {
                                             String str = "";
                                             List<Block> blockList = ocrResult.getData().getBlock();
@@ -346,7 +406,7 @@ public class ScoringFragment extends BaseMainFragment
                                                     }
                                                 }
                                             }
-                                            input.setText(str);
+                                            text_input.setText(str);
                                         }
                                     }
                                 });
@@ -366,7 +426,7 @@ public class ScoringFragment extends BaseMainFragment
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            input.setText("联网转换为序列化文本中。。。");
+                            text_input.setText("联网转换为序列化文本中。。。");
                         }
                     });
                     new Thread() {
@@ -387,9 +447,9 @@ public class ScoringFragment extends BaseMainFragment
                                     @Override
                                     public void run() {
                                         if (ocrResult == null) {
-                                            input.setText("建议重试");
+                                            text_input.setText("建议重试");
                                         } else if (!ocrResult.getCode().equals("0")) {
-                                            input.setText("API错误");
+                                            text_input.setText("API错误");
                                         } else {
                                             String str = "";
                                             List<Block> blockList = ocrResult.getData().getBlock();
@@ -403,7 +463,7 @@ public class ScoringFragment extends BaseMainFragment
                                                     }
                                                 }
                                             }
-                                            input.setText(str);
+                                            text_input.setText(str);
                                         }
                                     }
                                 });
@@ -552,5 +612,105 @@ public class ScoringFragment extends BaseMainFragment
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         intent.setType("image/*");
         startActivityForResult(intent, CHOOSE_PHOTO);
+    }
+
+    private void scoring(final String s1, final String s2) {
+        progressDialog.show();
+        if (s1 != null && s2 != null) {
+            String url = "http://116.85.30.119/sent_similarity?s1=" + s1 + "&s2=" + s2;
+
+            OkHttpClient client = new OkHttpClient();
+            Request request = new Request.Builder()
+                    .url(url)
+                    .build();
+            Call call = client.newCall(request);
+            call.enqueue(new Callback() {
+                @Override
+                public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                    Log.d(TAG, "onFailure: ");
+                    _mActivity.runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                            progressDialog.dismiss();
+                        }
+                    });
+                }
+
+                @Override
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                    String jsonData = response.body().string();
+                    Log.d(TAG, "onResponse: " + jsonData);
+                    Gson gson = new Gson();
+
+                    sentSimilarityBean = gson.fromJson(jsonData, SentSimilarityBean.class);
+
+                    //list排个序
+                    Collections.sort(sentSimilarityBean.getMost_similarity(), new Comparator<Most_similarity>() {
+                        public int compare(Most_similarity o1, Most_similarity o2) {
+                            //排序属性
+                            if (o1.getSimilarity() < o2.getSimilarity()) {
+                                return 1;
+                            }
+                            if (o1.getSimilarity() == o2.getSimilarity()) {
+                                return 0;
+                            }
+                            return -1;
+                        }
+                    });
+                    if (sentSimilarityBean.getStatus().equals("success")) {
+                        _mActivity.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                String str = "总分：" + (int) (sentSimilarityBean.getSimilarity() * 100) + "\n\n得分点：\n";
+                                for (int i = 0; i < sentSimilarityBean.getMost_similarity().size(); i++) {
+                                    if (i <= 5) {
+                                        Most_similarity similarity = sentSimilarityBean.getMost_similarity().get(i);
+                                        str = str + similarity.getWs1() + " 与 " + similarity.getWs2() + " 得分：" + similarity.getSimilarity() + "\n";
+                                    } else {
+                                        break;
+                                    }
+                                }
+                                progressDialog.dismiss();
+                                new AlertDialog.Builder(_mActivity)
+                                        .setTitle("评分结果(满分100)")
+                                        .setMessage(str)
+                                        .setPositiveButton("好的", null)
+                                        .show();
+                            }
+                        });
+                    }
+//                    JsonParser parser = new JsonParser();
+//                    JsonArray jsonElements = parser.parse(jsonData).getAsJsonArray();
+//                    questionList.clear();
+//                    if (jsonElements != null && jsonElements.size() != 0) {
+//                        for (JsonElement i : jsonElements) {
+//                            QuestionStandardAnswerBean bean = gson.fromJson(i, QuestionStandardAnswerBean.class);
+//                            Question question = new Question(bean.getSubject(), bean.getTitle(), bean.getStandardanswer());
+//                            questionList.add(question);
+//                        }
+//                    }
+//                    if (questionList.size() == 0) {
+//                        _mActivity.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                mAdapter.notifyDataSetChanged();
+//                                progressDialog.dismiss();
+//                                findNothing_text.setVisibility(View.VISIBLE);
+//                            }
+//                        });
+//                    } else {
+//                        _mActivity.runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                findNothing_text.setVisibility(View.GONE);
+//                                mAdapter.notifyDataSetChanged();
+//                                progressDialog.dismiss();
+//                            }
+//                        });
+//                    }
+                }
+            });
+        }
     }
 }

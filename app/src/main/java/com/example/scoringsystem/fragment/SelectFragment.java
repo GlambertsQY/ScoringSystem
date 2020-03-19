@@ -6,7 +6,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -60,6 +62,7 @@ public class SelectFragment extends BaseBackFragment {
     private Button search_button;
     private TextView keyword_text, findNothing_text;
     private ProgressDialog progressDialog;
+    private Spinner spinner;
 
     private static SelectFragment fragment;
 
@@ -98,6 +101,7 @@ public class SelectFragment extends BaseBackFragment {
         keyword_text = (TextView) view.findViewById(R.id.text_search);
         findNothing_text = (TextView) view.findViewById(R.id.text_find_nothing_select);
         search_button = (Button) view.findViewById(R.id.button_search);
+        spinner = (Spinner) view.findViewById(R.id.spinner_select);
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
         mToolbar.setTitle(mTitle);
         initToolbarNav(mToolbar);
@@ -108,12 +112,28 @@ public class SelectFragment extends BaseBackFragment {
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdapter);
 //        mAdapter.setDatas(questionList);
-        queryQuestion("");
+
         search_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                mAdapter.setKeyword(keyword_text.getText().toString());
-                queryQuestion(keyword_text.getText().toString());
+                String keyword = keyword_text.getText().toString();
+                String subject = spinner.getSelectedItem().toString();
+                queryQuestion(keyword, subject);
+            }
+        });
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String keyword = keyword_text.getText().toString();
+                String subject = adapterView.getItemAtPosition(i).toString();
+                queryQuestion(keyword, subject);
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Toast.makeText(_mActivity, "onNothingSelected invoked!", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -140,10 +160,10 @@ public class SelectFragment extends BaseBackFragment {
         }
     }
 
-    private void queryQuestion(final String queryStr) {
+    private void queryQuestion(final String keyword, final String subject) {
         progressDialog.show();
-        if (queryStr != null) {
-            String url = "http://116.85.30.119/questionstandardanswerlist?keyword=" + queryStr;
+        if (keyword != null) {
+            String url = "http://116.85.30.119/questionstandardanswerlist?keyword=" + keyword + "&subject=" + subject;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -200,19 +220,7 @@ public class SelectFragment extends BaseBackFragment {
                     }
                 }
             });
-//            _mActivity.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//            questionList.clear();
-//            questionList.addAll(list);
-//            mAdapter.notifyDataSetChanged();
-//                }
-//            });
-//            mAdapter = new SelectAdapter(_mActivity, questionList);
-//            mAdapter.notifyDataSetChanged();
             Log.d(TAG, "queryQuestion: out");
-//            return questionList;
         }
-//        return questionList;
     }
 }
