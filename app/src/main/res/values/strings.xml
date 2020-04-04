@@ -114,7 +114,7 @@
     <string name="phone">Phone</string>
     <string name="email">Email</string>
 
-    <string name="find_nothing">什么都没找到</string>
+    <string name="find_nothing">什么都没找到，去答题吧</string>
 
     <string name="subject_name">科目</string>
     <string name="title_name">题目</string>

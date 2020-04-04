@@ -81,6 +81,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.MyViewHold
                 bundle.putString("subject", mItems.get(position).getSubject());
                 bundle.putString("title", mItems.get(position).getTitle());
                 bundle.putString("answer", mItems.get(position).getAnswer());
+                bundle.putString("id_q", String.valueOf(mItems.get(position).getID_Q()));
                 mFragment.setFragmentResult(RESULT_OK, bundle);
                 mFragment.pop();
 
@@ -99,6 +100,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.MyViewHold
         holder.qSubject.setText(item.getSubject());
         holder.qTitle.setText(item.getTitle());
         holder.qAnswer.setText(item.getAnswer());
+        holder.ID_Q = item.getID_Q();
     }
 
     @Override
@@ -108,12 +110,14 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.MyViewHold
 
     class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView qSubject, qTitle, qAnswer;
+        private int ID_Q;
 
         public MyViewHolder(View itemView) {
             super(itemView);
             qSubject = (TextView) itemView.findViewById(R.id.question_subject);
             qTitle = (TextView) itemView.findViewById(R.id.question_title);
             qAnswer = (TextView) itemView.findViewById(R.id.question_answer);
+            ID_Q = 0;
         }
     }
 

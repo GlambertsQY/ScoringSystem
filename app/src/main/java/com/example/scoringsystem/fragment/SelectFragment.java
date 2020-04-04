@@ -195,7 +195,7 @@ public class SelectFragment extends BaseBackFragment {
                     if (jsonElements != null && jsonElements.size() != 0) {
                         for (JsonElement i : jsonElements) {
                             QuestionStandardAnswerBean bean = gson.fromJson(i, QuestionStandardAnswerBean.class);
-                            Question question = new Question(bean.getSubject(), bean.getTitle(), bean.getStandardanswer());
+                            Question question = new Question(bean.getSubject(), bean.getTitle(), bean.getStandardanswer(), bean.getId_q());
                             questionList.add(question);
                         }
                     }

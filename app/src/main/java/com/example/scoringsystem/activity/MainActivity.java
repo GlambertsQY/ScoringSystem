@@ -200,4 +200,8 @@ public class MainActivity extends MySupportActivity
     public static boolean getLoginState() {
         return ISLOGIN;
     }
+
+    public static String getUsername() {
+        return USERNAME;
+    }
 }

@@ -94,6 +94,7 @@ public class ScoringFragment extends BaseMainFragment
 
     private static final int TAKE_PHOTO = 1;
     private static final int CHOOSE_PHOTO = 2;
+    private static int CURRENT_ID_Q = 0;
     private Uri imageUri;
     private TextView text_subject, text_title, text_standard_answer, text_input;
     private Button button_scoring;
@@ -350,6 +351,7 @@ public class ScoringFragment extends BaseMainFragment
             text_subject.setText(data.getString("subject"));
             text_title.setText(data.getString("title"));
             text_standard_answer.setText(data.getString("answer"));
+            CURRENT_ID_Q = Integer.parseInt(data.getString("id_q"));
         }
     }
 
@@ -682,13 +684,64 @@ public class ScoringFragment extends BaseMainFragment
                                             .setPositiveButton("保存结果", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                                    progressDialog.show();
+                                                    String username = MainActivity.getUsername();
+                                                    String score = String.valueOf((int) (sentSimilarityBean.getSimilarity() * 10));
+                                                    String id_q = String.valueOf(CURRENT_ID_Q);
+                                                    String text_a = text_input.getText().toString();
+                                                    String url = "http://116.85.30.119/store_answer?username=" + username + "&score=" + score +
+                                                            "&id_q=" + id_q + "&text_a=" + text_a;
+                                                    OkHttpClient client = new OkHttpClient();
+                                                    Request request = new Request.Builder()
+                                                            .url(url)
+                                                            .build();
+                                                    Call call = client.newCall(request);
+                                                    call.enqueue(new Callback() {
+                                                        @Override
+                                                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                            Log.d(TAG, "onFailure: ");
+                                                            _mActivity.runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                                                                    progressDialog.dismiss();
+                                                                }
+                                                            });
+                                                        }
 
+                                                        @Override
+                                                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                                            String ret = response.body().string();
+                                                            Log.d(TAG, "onResponse: " + ret);
+                                                            if (ret.equals("OK")) {
+
+                                                                _mActivity.runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        // 发送成功
+                                                                        progressDialog.dismiss();
+                                                                        Toast.makeText(_mActivity, "保存成功", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+                                                            } else if (ret.equals("Fail")) {
+                                                                _mActivity.runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        // 登录失败
+                                                                        progressDialog.dismiss();
+                                                                        Toast.makeText(_mActivity, "保存失败", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
                                                 }
                                             })
                                             .setNeutralButton("返回", null)
                                             .setNegativeButton("对结果不满意？", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
+                                                    progressDialog.show();
                                                     String title = text_title.getText().toString();
                                                     String standardanswer = text_standard_answer.getText().toString();
                                                     String answer = text_input.getText().toString();
@@ -723,6 +776,7 @@ public class ScoringFragment extends BaseMainFragment
                                                                     @Override
                                                                     public void run() {
                                                                         // 发送成功
+                                                                        progressDialog.dismiss();
                                                                         Toast.makeText(_mActivity, "已将异常发送给管理员", Toast.LENGTH_SHORT).show();
                                                                     }
                                                                 });

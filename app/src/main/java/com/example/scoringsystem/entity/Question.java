@@ -10,11 +10,13 @@ public class Question implements Parcelable {
     private String subject;
     private String title;
     private String answer;
+    private int ID_Q;
 
-    public Question(String subject, String title, String answer) {
+    public Question(String subject, String title, String answer, int ID_Q) {
         this.subject = subject;
         this.title = title;
         this.answer = answer;
+        this.ID_Q = ID_Q;
     }
 
     public String getAnswer() {
@@ -72,6 +74,14 @@ public class Question implements Parcelable {
 
     public void setImgRes(int imgRes) {
         this.imgRes = imgRes;
+    }
+
+    public void setID_Q(int ID_Q) {
+        this.ID_Q = ID_Q;
+    }
+
+    public int getID_Q() {
+        return ID_Q;
     }
 
     @Override
