@@ -6,7 +6,9 @@ import android.os.Parcelable;
 /**
  * Created by YoKeyword on 16/2/1.
  */
-public class Question implements Parcelable {
+public class Question
+//        implements Parcelable
+{
     private String subject;
     private String title;
     private String answer;
@@ -27,31 +29,6 @@ public class Question implements Parcelable {
         this.answer = answer;
     }
 
-    private int imgRes;
-
-    public Question(String subject, int imgRes) {
-        this.subject = subject;
-        this.imgRes = imgRes;
-    }
-
-    protected Question(Parcel in) {
-        subject = in.readString();
-        title = in.readString();
-        imgRes = in.readInt();
-    }
-
-    public static final Creator<Question> CREATOR = new Creator<Question>() {
-        @Override
-        public Question createFromParcel(Parcel in) {
-            return new Question(in);
-        }
-
-        @Override
-        public Question[] newArray(int size) {
-            return new Question[size];
-        }
-    };
-
     public String getSubject() {
         return subject;
     }
@@ -68,14 +45,6 @@ public class Question implements Parcelable {
         this.title = title;
     }
 
-    public int getImgRes() {
-        return imgRes;
-    }
-
-    public void setImgRes(int imgRes) {
-        this.imgRes = imgRes;
-    }
-
     public void setID_Q(int ID_Q) {
         this.ID_Q = ID_Q;
     }
@@ -84,15 +53,46 @@ public class Question implements Parcelable {
         return ID_Q;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(subject);
-        dest.writeString(title);
-        dest.writeInt(imgRes);
-    }
 }
+//    private int imgRes;
+//
+//    public Question(String subject, int imgRes) {
+//        this.subject = subject;
+//        this.imgRes = imgRes;
+//    }
+//    protected Question(Parcel in) {
+//        subject = in.readString();
+//        title = in.readString();
+//        imgRes = in.readInt();
+//    }
+//    public static final Creator<Question> CREATOR = new Creator<Question>() {
+//        @Override
+//        public Question createFromParcel(Parcel in) {
+//            return new Question(in);
+//        }
+//
+//        @Override
+//        public Question[] newArray(int size) {
+//            return new Question[size];
+//        }
+//    };
+//    public int getImgRes() {
+//        return imgRes;
+//    }
+//
+//    public void setImgRes(int imgRes) {
+//        this.imgRes = imgRes;
+//    }
+//    @Override
+//    public int describeContents() {
+//        return 0;
+//    }
+//    @Override
+//    public void writeToParcel(Parcel dest, int flags) {
+//        dest.writeString(subject);
+//        dest.writeString(title);
+//        dest.writeInt(imgRes);
+//    }
+
+
+
