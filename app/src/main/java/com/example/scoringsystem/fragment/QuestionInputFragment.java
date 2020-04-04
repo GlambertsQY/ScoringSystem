@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,9 +42,10 @@ public class QuestionInputFragment extends BaseBackFragment {
     private String mTitle;
     private Toolbar mToolbar;
 
-    private EditText mEtSubject, mEtTitle, mEtStandardAnswer;
+    private EditText mEtTitle, mEtStandardAnswer;
     private Button mBtn;
     private ProgressDialog progressDialog;
+    private Spinner spinner;
 
     public static QuestionInputFragment newInstance(String title) {
         fragment = new QuestionInputFragment();
@@ -80,17 +82,17 @@ public class QuestionInputFragment extends BaseBackFragment {
         mToolbar.setTitle(mTitle);
         initToolbarNav(mToolbar);
 
-        mEtSubject = (EditText) view.findViewById(R.id.text_input_subject);
+        spinner = (Spinner) view.findViewById(R.id.spinner_question_input);
         mEtTitle = (EditText) view.findViewById(R.id.text_input_title);
         mEtStandardAnswer = (EditText) view.findViewById(R.id.text_input_standardanswer);
         mBtn = (Button) view.findViewById(R.id.btn_question_input);
 
-        showSoftInput(mEtSubject);
+        showSoftInput(mEtTitle);
 
         mBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String strSubject = mEtSubject.getText().toString();
+                String strSubject = spinner.getSelectedItem().toString();
                 String strTitle = mEtTitle.getText().toString();
                 String strStandardAnswer = mEtStandardAnswer.getText().toString();
 

@@ -35,6 +35,7 @@ public class MainActivity extends MySupportActivity
 
     // 再点一次退出程序时间设置
     private static final long WAIT_TIME = 2000L;
+    private static boolean ISLOGIN = false;
     private long TOUCH_TIME = 0;
     private static String USERNAME;
 
@@ -190,7 +191,13 @@ public class MainActivity extends MySupportActivity
         Menu menu_nv = mNavigationView.getMenu();
         menu_nv.findItem(R.id.account_menu_group).setVisible(false);
         menu_nv.findItem(R.id.account_info_group).setVisible(true);
+        menu_nv.findItem(R.id.nav_search).setVisible(true);
+        menu_nv.findItem(R.id.nav_questioninput).setVisible(true);
+        ISLOGIN = true;
         Toast.makeText(this, R.string.sign_in_success, Toast.LENGTH_SHORT).show();
+    }
 
+    public static boolean getLoginState() {
+        return ISLOGIN;
     }
 }

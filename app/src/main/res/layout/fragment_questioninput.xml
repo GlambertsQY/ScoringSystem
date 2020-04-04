@@ -26,22 +26,28 @@
                     android:layout_height="match_parent"
                     android:src="@drawable/ic_person_gray_24dp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                <!--                <com.google.android.material.textfield.TextInputLayout-->
+                <!--                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"-->
+                <!--                    android:layout_width="match_parent"-->
+                <!--                    android:layout_height="wrap_content"-->
+                <!--                    android:layout_marginLeft="16dp">-->
+
+                <!--                    <com.google.android.material.textfield.TextInputEditText-->
+                <!--                        android:id="@+id/text_input_subject"-->
+                <!--                        android:layout_width="match_parent"-->
+                <!--                        android:layout_height="wrap_content"-->
+                <!--                        android:hint="@string/subject_name"-->
+                <!--                        android:inputType="text"-->
+                <!--                        android:maxLines="1"-->
+                <!--                        android:singleLine="true" />-->
+                <!--                    -->
+                <!--                </com.google.android.material.textfield.TextInputLayout>-->
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinner_question_input"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="16dp">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/text_input_subject"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="@string/subject_name"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:singleLine="true" />
-
-                </com.google.android.material.textfield.TextInputLayout>
+                    android:layout_height="match_parent"
+                    android:entries="@array/spinner_array" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat

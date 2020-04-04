@@ -2,6 +2,7 @@ package com.example.scoringsystem.fragment.account;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -13,12 +14,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.scoringsystem.R;
 import com.example.scoringsystem.base.BaseBackFragment;
 import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
 import com.example.scoringsystem.entity.Question;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -43,6 +46,7 @@ public class LoginFragment extends BaseBackFragment {
     private EditText mEtAccount, mEtPassword;
     private Button mBtnLogin, mBtnRegister;
     private ProgressDialog progressDialog;
+    private TextInputLayout inputLayout;
 
     private OnLoginSuccessListener mOnLoginSuccessListener;
 
@@ -84,6 +88,7 @@ public class LoginFragment extends BaseBackFragment {
         mEtPassword = (EditText) view.findViewById(R.id.login_password);
         mBtnLogin = (Button) view.findViewById(R.id.btn_login);
         mBtnRegister = (Button) view.findViewById(R.id.btn_register_InLogin);
+        inputLayout = (TextInputLayout) view.findViewById(R.id.login_username_input_layout);
 
         toolbar.setTitle(R.string.login);
         initToolbarNav(toolbar);
@@ -109,6 +114,66 @@ public class LoginFragment extends BaseBackFragment {
             @Override
             public void onClick(View v) {
                 start(RegisterFragment.newInstance());
+            }
+        });
+        inputLayout.setEndIconOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(_mActivity)
+                        .setTitle("忘记密码？")
+                        .setMessage("点击“发送”即可向管理员发送信息，管理员将把密码发送到您预留的手机号上，请注意查收")
+                        .setPositiveButton("发送", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                String username = mEtAccount.getText().toString();
+                                String url = "http://116.85.30.119/getPassword?username=" + username;
+                                OkHttpClient client = new OkHttpClient();
+                                Request request = new Request.Builder()
+                                        .url(url)
+                                        .build();
+                                Call call = client.newCall(request);
+                                call.enqueue(new Callback() {
+                                    @Override
+                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                        Log.d(TAG, "onFailure: ");
+                                        _mActivity.runOnUiThread(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                            }
+                                        });
+                                    }
+
+                                    @Override
+                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                        String ret = response.body().string();
+                                        Log.d(TAG, "onResponse: " + ret);
+                                        if (ret.equals("OK")) {
+
+                                            _mActivity.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    // 发送成功
+                                                    Toast.makeText(_mActivity, "发送成功", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        } else if (ret.equals("Fail")) {
+                                            _mActivity.runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    // 登录失败
+                                                    progressDialog.dismiss();
+                                                    Toast.makeText(_mActivity, "发送失败", Toast.LENGTH_SHORT).show();
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            }
+                        })
+                        .setNegativeButton("取消", null)
+                        .show();
             }
         });
     }

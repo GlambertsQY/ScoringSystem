@@ -2,6 +2,7 @@ package com.example.scoringsystem.fragment.home;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -35,6 +36,7 @@ import androidx.core.view.GravityCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.scoringsystem.R;
+import com.example.scoringsystem.activity.MainActivity;
 import com.example.scoringsystem.base.BaseMainFragment;
 import com.example.scoringsystem.bean.OCRBean.Block;
 import com.example.scoringsystem.bean.OCRBean.Line;
@@ -68,6 +70,7 @@ import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -662,7 +665,7 @@ public class ScoringFragment extends BaseMainFragment
                         _mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                String str = "总分：" + (int) (sentSimilarityBean.getSimilarity() * 100) + "\n\n得分点：\n";
+                                String str = "总分：" + (int) (sentSimilarityBean.getSimilarity() * 10) + "\n\n得分点：\n";
                                 for (int i = 0; i < sentSimilarityBean.getMost_similarity().size(); i++) {
                                     if (i <= 5) {
                                         Most_similarity similarity = sentSimilarityBean.getMost_similarity().get(i);
@@ -672,11 +675,79 @@ public class ScoringFragment extends BaseMainFragment
                                     }
                                 }
                                 progressDialog.dismiss();
-                                new AlertDialog.Builder(_mActivity)
-                                        .setTitle("评分结果(满分100)")
-                                        .setMessage(str)
-                                        .setPositiveButton("好的", null)
-                                        .show();
+                                if (MainActivity.getLoginState()) {
+                                    new AlertDialog.Builder(_mActivity)
+                                            .setTitle("评分结果(满分10)")
+                                            .setMessage(str)
+                                            .setPositiveButton("保存结果", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+
+                                                }
+                                            })
+                                            .setNeutralButton("返回", null)
+                                            .setNegativeButton("对结果不满意？", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    String title = text_title.getText().toString();
+                                                    String standardanswer = text_standard_answer.getText().toString();
+                                                    String answer = text_input.getText().toString();
+                                                    String score = String.valueOf((int) sentSimilarityBean.getSimilarity() * 10);
+                                                    String url = "http://116.85.30.119/sendError?title=" + title + "&standardanswer=" + standardanswer +
+                                                            "&answer=" + answer + "&score=" + score;
+                                                    OkHttpClient client = new OkHttpClient();
+                                                    Request request = new Request.Builder()
+                                                            .url(url)
+                                                            .build();
+                                                    Call call = client.newCall(request);
+                                                    call.enqueue(new Callback() {
+                                                        @Override
+                                                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                                            Log.d(TAG, "onFailure: ");
+                                                            _mActivity.runOnUiThread(new Runnable() {
+                                                                @Override
+                                                                public void run() {
+                                                                    Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
+                                                                    progressDialog.dismiss();
+                                                                }
+                                                            });
+                                                        }
+
+                                                        @Override
+                                                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                                            String ret = response.body().string();
+                                                            Log.d(TAG, "onResponse: " + ret);
+                                                            if (ret.equals("OK")) {
+
+                                                                _mActivity.runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        // 发送成功
+                                                                        Toast.makeText(_mActivity, "已将异常发送给管理员", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+                                                            } else if (ret.equals("Fail")) {
+                                                                _mActivity.runOnUiThread(new Runnable() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        // 登录失败
+                                                                        progressDialog.dismiss();
+                                                                        Toast.makeText(_mActivity, "发送异常失败", Toast.LENGTH_SHORT).show();
+                                                                    }
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                }
+                                            })
+                                            .show();
+                                } else {
+                                    new AlertDialog.Builder(_mActivity)
+                                            .setTitle("评分结果(满分10)")
+                                            .setMessage(str)
+                                            .setPositiveButton("好的", null)
+                                            .show();
+                                }
                             }
                         });
                     }
