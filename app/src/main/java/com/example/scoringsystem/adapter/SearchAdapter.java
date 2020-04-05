@@ -58,10 +58,13 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         Answer item = mItems.get(position);
-        holder.aTitle.setText(item.getTitle());
-        holder.aStandardAnswer.setText(item.getStandardAnswer());
-        holder.aAnswer.setText(item.getAnswer());
-        String scoreAndTime = item.getScore() + " " + item.getScore_time();
+        String title = "题目：" + item.getTitle();
+        String standardanswer = "标准答案：" + item.getStandardAnswer();
+        String answer = "作答：" + item.getAnswer();
+        String scoreAndTime = "分数：" + item.getScore() + "\n评分时间(年_月_日_时分秒)：" + item.getScore_time();
+        holder.aTitle.setText(title);
+        holder.aStandardAnswer.setText(standardanswer);
+        holder.aAnswer.setText(answer);
         holder.aScoreAndTime.setText(scoreAndTime);
     }
 

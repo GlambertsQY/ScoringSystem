@@ -94,7 +94,7 @@ public class ScoringFragment extends BaseMainFragment
 
     private static final int TAKE_PHOTO = 1;
     private static final int CHOOSE_PHOTO = 2;
-    private static int CURRENT_ID_Q = 0;
+    private static int CURRENT_ID_Q = 1;
     private Uri imageUri;
     private TextView text_subject, text_title, text_standard_answer, text_input;
     private Button button_scoring;
@@ -155,7 +155,7 @@ public class ScoringFragment extends BaseMainFragment
 
     private void initView(View view) {
         progressDialog = new ProgressDialog(_mActivity);
-        progressDialog.setMessage("评分中");
+        progressDialog.setMessage("加载中");
         progressDialog.setCanceledOnTouchOutside(false);
 
         mToolbar = (Toolbar) view.findViewById(R.id.toolbar);
@@ -714,7 +714,6 @@ public class ScoringFragment extends BaseMainFragment
                                                             String ret = response.body().string();
                                                             Log.d(TAG, "onResponse: " + ret);
                                                             if (ret.equals("OK")) {
-
                                                                 _mActivity.runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
