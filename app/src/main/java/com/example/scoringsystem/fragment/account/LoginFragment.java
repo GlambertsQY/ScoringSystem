@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -126,50 +127,55 @@ public class LoginFragment extends BaseBackFragment {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String username = mEtAccount.getText().toString();
-                                String url = "http://116.85.30.119/getPassword?username=" + username;
-                                OkHttpClient client = new OkHttpClient();
-                                Request request = new Request.Builder()
-                                        .url(url)
-                                        .build();
-                                Call call = client.newCall(request);
-                                call.enqueue(new Callback() {
-                                    @Override
-                                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                                        Log.d(TAG, "onFailure: ");
-                                        _mActivity.runOnUiThread(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
-                                                progressDialog.dismiss();
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                                        String ret = response.body().string();
-                                        Log.d(TAG, "onResponse: " + ret);
-                                        if (ret.equals("OK")) {
-
+                                if (!username.equals("")) {
+                                    String url = "http://116.85.30.119/getPassword?username=" + username;
+                                    OkHttpClient client = new OkHttpClient();
+                                    Request request = new Request.Builder()
+                                            .url(url)
+                                            .build();
+                                    Call call = client.newCall(request);
+                                    call.enqueue(new Callback() {
+                                        @Override
+                                        public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                                            Log.d(TAG, "onFailure: ");
                                             _mActivity.runOnUiThread(new Runnable() {
                                                 @Override
                                                 public void run() {
-                                                    // 发送成功
-                                                    Toast.makeText(_mActivity, "发送成功", Toast.LENGTH_SHORT).show();
-                                                }
-                                            });
-                                        } else if (ret.equals("Fail")) {
-                                            _mActivity.runOnUiThread(new Runnable() {
-                                                @Override
-                                                public void run() {
-                                                    // 登录失败
+                                                    Toast.makeText(_mActivity, "网络未连接", Toast.LENGTH_SHORT).show();
                                                     progressDialog.dismiss();
-                                                    Toast.makeText(_mActivity, "发送失败", Toast.LENGTH_SHORT).show();
                                                 }
                                             });
                                         }
-                                    }
-                                });
+
+                                        @Override
+                                        public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                                            String ret = response.body().string();
+                                            Log.d(TAG, "onResponse: " + ret);
+                                            if (ret.equals("OK")) {
+
+                                                _mActivity.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        // 发送成功
+                                                        Toast.makeText(_mActivity, "发送成功", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            } else if (ret.equals("Fail")) {
+                                                _mActivity.runOnUiThread(new Runnable() {
+                                                    @Override
+                                                    public void run() {
+                                                        // 登录失败
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(_mActivity, "发送失败", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+                                } else {
+                                    Toast.makeText(_mActivity, "用户名不能为空", Toast.LENGTH_SHORT).show();
+                                    progressDialog.dismiss();
+                                }
                             }
                         })
                         .setNegativeButton("取消", null)
