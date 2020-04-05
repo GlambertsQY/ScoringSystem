@@ -2,7 +2,6 @@ package com.example.scoringsystem.adapter;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,31 +12,12 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scoringsystem.R;
-import com.example.scoringsystem.bean.QuestionBean.QuestionBean;
-import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
-import com.example.scoringsystem.bean.StandardAnswerBean.StandardAnswerBean;
 import com.example.scoringsystem.entity.Question;
 import com.example.scoringsystem.fragment.SelectFragment;
 import com.example.scoringsystem.listener.OnItemClickListener;
-import com.example.scoringsystem.utils.HttpUtil;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
 
 public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.MyViewHolder> {
     private static final String TAG = "SelectAdapter";
@@ -71,7 +51,7 @@ public class SelectAdapter extends RecyclerView.Adapter<SelectAdapter.MyViewHold
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_home, parent, false);
+        View view = mInflater.inflate(R.layout.item_home_select, parent, false);
         final MyViewHolder holder = new MyViewHolder(view);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,29 +3,58 @@ package com.example.scoringsystem.entity;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-//public class Answer implements Parcelable {
-//
-//    public static final Creator<Answer> CREATOR = new Creator<Answer>() {
-//        @Override
-//        public Answer createFromParcel(Parcel in) {
-//            return new Answer(in);
-//        }
-//
-//        @Override
-//        public Answer[] newArray(int size) {
-//            return new Answer[size];
-//        }
-//    };
-//
-//    @Override
-//    public int describeContents() {
-//        return 0;
-//    }
-//
-//    @Override
-//    public void writeToParcel(Parcel dest, int flags) {
-//        dest.writeString(subject);
-//        dest.writeString(title);
-//        dest.writeInt(imgRes);
-//    }
-//}
+public class Answer {
+    private String title;
+    private String standardAnswer;
+    private String answer;
+    private int score;
+    private String score_time;
+
+    public Answer(String title, String standardAnswer, String answer, int score, String score_time) {
+        this.title = title;
+        this.standardAnswer = standardAnswer;
+        this.answer = answer;
+        this.score = score;
+        this.score_time = score_time;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getStandardAnswer() {
+        return standardAnswer;
+    }
+
+    public void setStandardAnswer(String standardAnswer) {
+        this.standardAnswer = standardAnswer;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public String getScore_time() {
+        return score_time;
+    }
+
+    public void setScore_time(String score_time) {
+        this.score_time = score_time;
+    }
+}

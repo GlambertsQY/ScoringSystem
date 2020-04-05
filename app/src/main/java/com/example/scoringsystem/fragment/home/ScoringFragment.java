@@ -727,7 +727,7 @@ public class ScoringFragment extends BaseMainFragment
                                                                 _mActivity.runOnUiThread(new Runnable() {
                                                                     @Override
                                                                     public void run() {
-                                                                        // 登录失败
+                                                                        // 发送失败
                                                                         progressDialog.dismiss();
                                                                         Toast.makeText(_mActivity, "保存失败", Toast.LENGTH_SHORT).show();
                                                                     }

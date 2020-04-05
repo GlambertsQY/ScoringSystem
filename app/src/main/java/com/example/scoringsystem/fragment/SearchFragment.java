@@ -21,7 +21,9 @@ import com.example.scoringsystem.R;
 import com.example.scoringsystem.adapter.SearchAdapter;
 import com.example.scoringsystem.adapter.SelectAdapter;
 import com.example.scoringsystem.base.BaseBackFragment;
+import com.example.scoringsystem.bean.AnswerBean;
 import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
+import com.example.scoringsystem.entity.Answer;
 import com.example.scoringsystem.entity.Question;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -51,7 +53,7 @@ public class SearchFragment extends BaseBackFragment {
     private Toolbar mToolbar;
     private RecyclerView recyclerView;
     private SearchAdapter mAdapter;
-    private List<Question> questionList = new ArrayList<>();
+    private List<Answer> answerList = new ArrayList<>();
     private Button search_button;
     private TextView keyword_text, findNothing_text;
     private ProgressDialog progressDialog;
@@ -99,7 +101,7 @@ public class SearchFragment extends BaseBackFragment {
 
         recyclerView = (RecyclerView) view.findViewById(R.id.recy_search_InSearch);
 //        mAdapter = new SelectAdapter(_mActivity);
-        mAdapter = new SearchAdapter(_mActivity, questionList, fragment);
+        mAdapter = new SearchAdapter(_mActivity, answerList, fragment);
         LinearLayoutManager manager = new LinearLayoutManager(_mActivity);
         recyclerView.setLayoutManager(manager);
         recyclerView.setAdapter(mAdapter);
@@ -110,7 +112,7 @@ public class SearchFragment extends BaseBackFragment {
 //                mAdapter.setKeyword(keyword_text.getText().toString());
                 String keyword = keyword_text.getText().toString();
                 String subject = spinner.getSelectedItem().toString();
-                queryQuestion(keyword, subject);
+                queryAnswer(keyword, subject);
             }
         });
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -118,7 +120,7 @@ public class SearchFragment extends BaseBackFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String keyword = keyword_text.getText().toString();
                 String subject = adapterView.getItemAtPosition(i).toString();
-                queryQuestion(keyword, subject);
+                queryAnswer(keyword, subject);
             }
 
             @Override
@@ -150,10 +152,10 @@ public class SearchFragment extends BaseBackFragment {
         }
     }
 
-    private void queryQuestion(final String keyword, final String subject) {
+    private void queryAnswer(final String keyword, final String subject) {
         progressDialog.show();
         if (keyword != null) {
-            String url = "http://116.85.30.119/questionstandardanswerlist?keyword=" + keyword + "&subject=" + subject;
+            String url = "http://116.85.30.119/query_answer?keyword=" + keyword + "&subject=" + subject;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -181,15 +183,15 @@ public class SearchFragment extends BaseBackFragment {
 
                     JsonParser parser = new JsonParser();
                     JsonArray jsonElements = parser.parse(jsonData).getAsJsonArray();
-                    questionList.clear();
+                    answerList.clear();
                     if (jsonElements != null && jsonElements.size() != 0) {
                         for (JsonElement i : jsonElements) {
-                            QuestionStandardAnswerBean bean = gson.fromJson(i, QuestionStandardAnswerBean.class);
-                            Question question = new Question(bean.getSubject(), bean.getTitle(), bean.getStandardanswer(), bean.getId_q());
-                            questionList.add(question);
+                            AnswerBean bean = gson.fromJson(i, AnswerBean.class);
+                            Answer answer = new Answer(bean.getTitle(), bean.getStandardanswer(), bean.getAnswer(), bean.getScore(), bean.getScore_time());
+                            answerList.add(answer);
                         }
                     }
-                    if (questionList.size() == 0) {
+                    if (answerList.size() == 0) {
                         _mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

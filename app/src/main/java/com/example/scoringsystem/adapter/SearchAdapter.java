@@ -1,8 +1,6 @@
 package com.example.scoringsystem.adapter;
 
 import android.content.Context;
-import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,36 +11,17 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scoringsystem.R;
-import com.example.scoringsystem.bean.QuestionBean.QuestionBean;
-import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
-import com.example.scoringsystem.bean.StandardAnswerBean.StandardAnswerBean;
-import com.example.scoringsystem.entity.Question;
+import com.example.scoringsystem.entity.Answer;
 import com.example.scoringsystem.fragment.SearchFragment;
-import com.example.scoringsystem.fragment.SelectFragment;
 import com.example.scoringsystem.listener.OnItemClickListener;
-import com.example.scoringsystem.utils.HttpUtil;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-
+//TODO 搞定adapter，实现search功能，换启动及开屏图片
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHolder> {
-    private static final String TAG = "SelectAdapter";
-    private List<Question> mItems = new ArrayList<>();
+    private static final String TAG = "SearchAdapter";
+    private List<Answer> mItems = new ArrayList<>();
     private LayoutInflater mInflater;
     private Context mContext;
     private SearchFragment mFragment;
@@ -51,40 +30,22 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     private OnItemClickListener mClickListener;
 
     //fragment特别版，构造函数需要给context
-    public SearchAdapter(Context context, List<Question> questionList, SearchFragment mFragment) {
+    public SearchAdapter(Context context, List<Answer> answerList, SearchFragment mFragment) {
         this.mInflater = LayoutInflater.from(context);
-        this.mItems = questionList;
+        this.mItems = answerList;
         this.mContext = context;
         this.mFragment = mFragment;
     }
 
-    public void setDatas(List<Question> items) {
-//        queryQuestion("");
-//        mItems.addAll(items);
-    }
-
-    public void setKeyword(String keyword) {
-//        queryQuestion(keyword);
-        notifyDataSetChanged();
-    }
-
-
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = mInflater.inflate(R.layout.item_home, parent, false);
+        View view = mInflater.inflate(R.layout.item_home_search, parent, false);
         final MyViewHolder holder = new MyViewHolder(view);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = holder.getAdapterPosition();
-//                Bundle bundle = new Bundle();
-//                bundle.putString("subject", mItems.get(position).getSubject());
-//                bundle.putString("title", mItems.get(position).getTitle());
-//                bundle.putString("answer", mItems.get(position).getAnswer());
-//                mFragment.setFragmentResult(RESULT_OK, bundle);
-//                mFragment.pop();
-
                 Toast.makeText(mContext, "Success!", Toast.LENGTH_SHORT).show();
                 if (mClickListener != null) {
                     mClickListener.onItemClick(position, v);
@@ -96,10 +57,12 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        Question item = mItems.get(position);
-        holder.qSubject.setText(item.getSubject());
-        holder.qTitle.setText(item.getTitle());
-        holder.qAnswer.setText(item.getAnswer());
+        Answer item = mItems.get(position);
+        holder.aTitle.setText(item.getTitle());
+        holder.aStandardAnswer.setText(item.getStandardAnswer());
+        holder.aAnswer.setText(item.getAnswer());
+        String scoreAndTime = item.getScore() + " " + item.getScore_time();
+        holder.aScoreAndTime.setText(scoreAndTime);
     }
 
     @Override
@@ -108,13 +71,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.MyViewHold
     }
 
     class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView qSubject, qTitle, qAnswer;
+        private TextView aTitle, aStandardAnswer, aAnswer, aScoreAndTime;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-            qSubject = (TextView) itemView.findViewById(R.id.question_subject);
-            qTitle = (TextView) itemView.findViewById(R.id.question_title);
-            qAnswer = (TextView) itemView.findViewById(R.id.question_answer);
+            aTitle = (TextView) itemView.findViewById(R.id.answer_title);
+            aStandardAnswer = (TextView) itemView.findViewById(R.id.answer_standard_answer);
+            aAnswer = (TextView) itemView.findViewById(R.id.answer_answer);
+            aScoreAndTime = (TextView) itemView.findViewById(R.id.answer_scoreAndtime);
         }
     }
 
