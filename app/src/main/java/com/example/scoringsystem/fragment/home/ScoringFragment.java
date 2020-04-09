@@ -667,14 +667,19 @@ public class ScoringFragment extends BaseMainFragment
                         _mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                String str = "总分：" + (int) (sentSimilarityBean.getSimilarity() * 10) + "\n\n得分点：\n";
-                                for (int i = 0; i < sentSimilarityBean.getMost_similarity().size(); i++) {
-                                    if (i <= 5) {
-                                        Most_similarity similarity = sentSimilarityBean.getMost_similarity().get(i);
-                                        str = str + similarity.getWs1() + " 与 " + similarity.getWs2() + " 得分：" + similarity.getSimilarity() + "\n";
-                                    } else {
-                                        break;
+                                String str = "";
+                                if ((int) (sentSimilarityBean.getSimilarity() * 10) != 0) {
+                                    str = "总分：" + (int) (sentSimilarityBean.getSimilarity() * 10) + "\n\n得分点：\n";
+                                    for (int i = 0; i < sentSimilarityBean.getMost_similarity().size(); i++) {
+                                        if (i <= 5) {
+                                            Most_similarity similarity = sentSimilarityBean.getMost_similarity().get(i);
+                                            str = str + similarity.getWs1() + " 与 " + similarity.getWs2() + " 得分：" + similarity.getSimilarity() + "\n";
+                                        } else {
+                                            break;
+                                        }
                                     }
+                                } else {
+                                    str = "总分：" + (int) (sentSimilarityBean.getSimilarity() * 10) + "\n\n无得分点";
                                 }
                                 progressDialog.dismiss();
                                 if (MainActivity.getLoginState()) {

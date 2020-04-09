@@ -99,6 +99,7 @@ public class LoginFragment extends BaseBackFragment {
             public void onClick(View v) {
                 String strAccount = mEtAccount.getText().toString();
                 String strPassword = mEtPassword.getText().toString();
+                //判断账号密码是否为空
                 if (TextUtils.isEmpty(strAccount.trim())) {
                     Toast.makeText(_mActivity, R.string.error_username, Toast.LENGTH_SHORT).show();
                     return;
@@ -107,6 +108,7 @@ public class LoginFragment extends BaseBackFragment {
                     Toast.makeText(_mActivity, R.string.error_pwd, Toast.LENGTH_SHORT).show();
                     return;
                 }
+                //发送账号密码验证
                 queryUser(strAccount, strPassword);
             }
         });

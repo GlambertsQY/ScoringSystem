@@ -204,4 +204,10 @@ public class MainActivity extends MySupportActivity
     public static String getUsername() {
         return USERNAME;
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ISLOGIN = false;
+    }
 }
