@@ -151,7 +151,7 @@ public class RegisterFragment extends BaseBackFragment {
                         _mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // 登录成功
+                                // 注册成功
                                 mOnLoginSuccessListener.onLoginSuccess(username);
                                 progressDialog.dismiss();
                                 popTo(LoginFragment.class, true);
@@ -161,7 +161,7 @@ public class RegisterFragment extends BaseBackFragment {
                         _mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                // 登录失败
+                                // 注册失败
                                 progressDialog.dismiss();
                                 Toast.makeText(_mActivity, "用户名重复请修改", Toast.LENGTH_SHORT).show();
                             }

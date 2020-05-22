@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.scoringsystem.R;
+import com.example.scoringsystem.activity.MainActivity;
 import com.example.scoringsystem.adapter.SearchAdapter;
 import com.example.scoringsystem.adapter.SelectAdapter;
 import com.example.scoringsystem.base.BaseBackFragment;
@@ -155,7 +156,8 @@ public class SearchFragment extends BaseBackFragment {
     private void queryAnswer(final String keyword, final String subject) {
         progressDialog.show();
         if (keyword != null) {
-            String url = "http://116.85.30.119/query_answer?keyword=" + keyword + "&subject=" + subject;
+            String username = MainActivity.getUsername();
+            String url = "http://116.85.30.119/query_answer?keyword=" + keyword + "&subject=" + subject + "&username=" + username;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()

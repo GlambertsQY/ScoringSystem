@@ -229,7 +229,6 @@ public class LoginFragment extends BaseBackFragment {
                     String ret = response.body().string();
                     Log.d(TAG, "onResponse: " + ret);
                     if (ret.equals("OK")) {
-
                         _mActivity.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
