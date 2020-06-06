@@ -26,6 +26,7 @@ import com.example.scoringsystem.bean.AnswerBean;
 import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
 import com.example.scoringsystem.entity.Answer;
 import com.example.scoringsystem.entity.Question;
+import com.example.scoringsystem.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -157,7 +158,7 @@ public class SearchFragment extends BaseBackFragment {
         progressDialog.show();
         if (keyword != null) {
             String username = MainActivity.getUsername();
-            String url = "http://116.85.30.119/query_answer?keyword=" + keyword + "&subject=" + subject + "&username=" + username;
+            String url = Constants.REQUEST_HOST + "/query_answer?keyword=" + keyword + "&subject=" + subject + "&username=" + username;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()

@@ -25,6 +25,7 @@ import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
 import com.example.scoringsystem.bean.StandardAnswerBean.StandardAnswerBean;
 import com.example.scoringsystem.entity.Question;
 import com.example.scoringsystem.listener.OnItemClickListener;
+import com.example.scoringsystem.utils.Constants;
 import com.example.scoringsystem.utils.HttpUtil;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -163,7 +164,7 @@ public class SelectFragment extends BaseBackFragment {
     private void queryQuestion(final String keyword, final String subject) {
         progressDialog.show();
         if (keyword != null) {
-            String url = "http://116.85.30.119/questionstandardanswerlist?keyword=" + keyword + "&subject=" + subject;
+            String url = Constants.REQUEST_HOST + "/questionstandardanswerlist?keyword=" + keyword + "&subject=" + subject;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()

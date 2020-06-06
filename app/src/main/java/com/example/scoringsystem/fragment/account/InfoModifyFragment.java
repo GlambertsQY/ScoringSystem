@@ -20,6 +20,7 @@ import com.example.scoringsystem.base.BaseBackFragment;
 import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
 import com.example.scoringsystem.bean.UserBean;
 import com.example.scoringsystem.entity.Question;
+import com.example.scoringsystem.utils.Constants;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -123,7 +124,7 @@ public class InfoModifyFragment extends BaseBackFragment {
 
     private void updateUser(final String username, final String password, final String phone, final String mail) {
         progressDialog.show();
-        String url = "http://116.85.30.119/update_user?old_username=" + OLD_USERNAME + "&new_username=" + username
+        String url = Constants.REQUEST_HOST + "/update_user?old_username=" + OLD_USERNAME + "&new_username=" + username
                 + "&password=" + password
                 + "&phone=" + phone + "&mail=" + mail;
         OkHttpClient client = new OkHttpClient();
@@ -174,7 +175,7 @@ public class InfoModifyFragment extends BaseBackFragment {
 
     private void queryUser(final String username) {
         progressDialog.show();
-        String url = "http://116.85.30.119/query_userByName?username=" + username;
+        String url = Constants.REQUEST_HOST + "/query_userByName?username=" + username;
 
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

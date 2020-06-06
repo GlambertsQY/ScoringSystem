@@ -49,6 +49,7 @@ import com.example.scoringsystem.bean.SimilarityBean.Showapi;
 import com.example.scoringsystem.entity.Question;
 import com.example.scoringsystem.fragment.SearchFragment;
 import com.example.scoringsystem.fragment.SelectFragment;
+import com.example.scoringsystem.utils.Constants;
 import com.example.scoringsystem.utils.HttpUtil;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
@@ -622,7 +623,7 @@ public class ScoringFragment extends BaseMainFragment
     private void scoring(final String s1, final String s2) {
         progressDialog.show();
         if (s1 != null && s2 != null) {
-            String url = "http://116.85.30.119/sent_similarity?s1=" + s1 + "&s2=" + s2;
+            String url = Constants.REQUEST_HOST + "/sent_similarity?s1=" + s1 + "&s2=" + s2;
 
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
@@ -694,7 +695,7 @@ public class ScoringFragment extends BaseMainFragment
                                                     String score = String.valueOf((int) (sentSimilarityBean.getSimilarity() * 10));
                                                     String id_q = String.valueOf(CURRENT_ID_Q);
                                                     String text_a = text_input.getText().toString();
-                                                    String url = "http://116.85.30.119/store_answer?username=" + username + "&score=" + score +
+                                                    String url = Constants.REQUEST_HOST + "/store_answer?username=" + username + "&score=" + score +
                                                             "&id_q=" + id_q + "&text_a=" + text_a;
                                                     OkHttpClient client = new OkHttpClient();
                                                     Request request = new Request.Builder()
@@ -750,7 +751,7 @@ public class ScoringFragment extends BaseMainFragment
                                                     String standardanswer = text_standard_answer.getText().toString();
                                                     String answer = text_input.getText().toString();
                                                     String score = String.valueOf((int) sentSimilarityBean.getSimilarity() * 10);
-                                                    String url = "http://116.85.30.119/sendError?title=" + title + "&standardanswer=" + standardanswer +
+                                                    String url = Constants.REQUEST_HOST + "/sendError?title=" + title + "&standardanswer=" + standardanswer +
                                                             "&answer=" + answer + "&score=" + score;
                                                     OkHttpClient client = new OkHttpClient();
                                                     Request request = new Request.Builder()

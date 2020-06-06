@@ -22,6 +22,7 @@ import com.example.scoringsystem.R;
 import com.example.scoringsystem.base.BaseBackFragment;
 import com.example.scoringsystem.bean.QuestionStandardAnswerBean;
 import com.example.scoringsystem.entity.Question;
+import com.example.scoringsystem.utils.Constants;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -130,7 +131,7 @@ public class LoginFragment extends BaseBackFragment {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 String username = mEtAccount.getText().toString();
                                 if (!username.equals("")) {
-                                    String url = "http://116.85.30.119/getPassword?username=" + username;
+                                    String url = Constants.REQUEST_HOST + "/getPassword?username=" + username;
                                     OkHttpClient client = new OkHttpClient();
                                     Request request = new Request.Builder()
                                             .url(url)
@@ -205,7 +206,7 @@ public class LoginFragment extends BaseBackFragment {
     private void queryUser(final String username, final String password) {
         progressDialog.show();
         if (username != null) {
-            String url = "http://116.85.30.119/queryUser?username=" + username + "&" + "password=" + password;
+            String url = Constants.REQUEST_HOST + "/queryUser?username=" + username + "&" + "password=" + password;
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
                     .url(url)

@@ -23,6 +23,7 @@ import com.example.scoringsystem.adapter.SearchAdapter;
 import com.example.scoringsystem.base.BaseBackFragment;
 import com.example.scoringsystem.fragment.account.LoginFragment;
 import com.example.scoringsystem.fragment.account.RegisterFragment;
+import com.example.scoringsystem.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -115,7 +116,7 @@ public class QuestionInputFragment extends BaseBackFragment {
 
     private void addQuestion(final String subject, final String title, final String standardanswer) {
         progressDialog.show();
-        String url = "http://116.85.30.119/add_questionStandardAnswer?subject=" + subject + "&title=" + title
+        String url = Constants.REQUEST_HOST + "/add_questionStandardAnswer?subject=" + subject + "&title=" + title
                 + "&standardanswer=" + standardanswer;
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()

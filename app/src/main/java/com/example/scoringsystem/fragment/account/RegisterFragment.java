@@ -17,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 
 import com.example.scoringsystem.R;
 import com.example.scoringsystem.base.BaseBackFragment;
+import com.example.scoringsystem.utils.Constants;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -122,7 +123,7 @@ public class RegisterFragment extends BaseBackFragment {
     private void addUser(final String username, final String password, final String phone, final String mail) {
         progressDialog.show();
         if (username != null) {
-            String url = "http://116.85.30.119/add_user?username=" + username + "&password=" + password
+            String url = Constants.REQUEST_HOST + "/add_user?username=" + username + "&password=" + password
                     + "&phone=" + phone + "&mail=" + mail;
             OkHttpClient client = new OkHttpClient();
             Request request = new Request.Builder()
