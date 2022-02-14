@@ -685,7 +685,7 @@ public class ScoringFragment extends BaseMainFragment
                                 progressDialog.dismiss();
                                 if (MainActivity.getLoginState()) {
                                     new AlertDialog.Builder(_mActivity)
-                                            .setTitle("评分结果(满分10)")
+                                            .setTitle("评分结果(满分100)")
                                             .setMessage(str)
                                             .setPositiveButton("保存结果", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -802,7 +802,7 @@ public class ScoringFragment extends BaseMainFragment
                                             .show();
                                 } else {
                                     new AlertDialog.Builder(_mActivity)
-                                            .setTitle("评分结果(满分10)")
+                                            .setTitle("评分结果(满分100)")
                                             .setMessage(str)
                                             .setPositiveButton("好的", null)
                                             .show();

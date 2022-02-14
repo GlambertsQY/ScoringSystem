@@ -1,12 +1,12 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.0"
+    compileSdkVersion 30
+    buildToolsVersion "31.0.0"
     defaultConfig {
         applicationId "com.example.scoringsystem"
         minSdkVersion 23
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -27,7 +27,7 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.google.android.material:material:1.2.0-alpha05'
     implementation 'androidx.recyclerview:recyclerview:1.2.0-alpha01'
-    implementation 'com.squareup.okhttp3:okhttp:4.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'me.yokeyword:fragmentationx:1.0.2'
     implementation 'me.yokeyword:fragmentationx:1.0.2'

@@ -124,7 +124,7 @@ public class MainActivity extends MySupportActivity
 //                        // 如果已经在栈内,则以SingleTask模式start
 //                        myHome.start(fragment, SupportFragment.SINGLETASK);
 //                    }
-                    start(SearchFragment.newInstance("题库搜索"), SupportFragment.SINGLETASK);
+                    start(SearchFragment.newInstance("作答搜索"), SupportFragment.SINGLETASK);
                 } else if (id == R.id.nav_questioninput) {
 //                    ShopFragment fragment = findFragment(ShopFragment.class);
 //                    if (fragment == null) {

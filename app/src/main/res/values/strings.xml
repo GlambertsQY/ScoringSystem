@@ -6,8 +6,8 @@
 
     <string name="scoring">评分</string>
     <string name="discover">Discover</string>
-    <string name="search">题库搜索</string>
-    <string name="question_input">题目录入</string>
+    <string name="search">作答搜索</string>
+    <string name="question_input">题目录入</string>;
     <string name="login">登录</string>
     <string name="system">账户</string>
     <string name="personal">用户</string>
@@ -115,6 +115,8 @@
     <string name="email">Email</string>
 
     <string name="find_nothing">什么都没找到，去答题吧</string>
+    <string name="find_nothing_select">无结果，可以自行录入</string>
+    <string name="find_nothing_search">无结果，去答题吧</string>
 
     <string name="subject_name">科目</string>
     <string name="title_name">题目</string>
